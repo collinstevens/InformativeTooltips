@@ -1,0 +1,4 @@
+.vscode
+scripts/
+prod/
+.claude/settings.local.json

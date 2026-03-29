@@ -1,0 +1,13 @@
+## Interface: 120001
+## Title: Informative Tooltips
+## Notes: Displays talent information related to an ability its tooltip
+## IconTexture: Interface\Icons\INV_Inscription_TalentTome01
+## Author: Collin Stevens
+## Version: @project-version@
+## X-Website: https://github.com/collinstevens/InformativeTooltips
+## X-Curse-Project-ID: 1499027
+## X-Wago-ID: Q6aRLAKW
+## X-WoWI-ID:
+## SavedVariables: InformativeTooltipsDB
+
+InformativeTooltips.lua

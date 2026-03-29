@@ -1,0 +1,12 @@
+package-as: InformativeTooltips
+
+ignore:
+  - .github
+  - .vscode
+  - .gitignore
+  - README.md
+  - logo.png
+  - logo.svg
+  - LICENSE
+  - CLAUDE.md
+  - media
