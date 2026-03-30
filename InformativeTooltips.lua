@@ -281,13 +281,19 @@ end
 ---------------------------------------------------------------------------
 
 if TooltipDataProcessor then
-    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip, data)
-        if not data or issecretvalue(data.type) then return end
-
-        if data.type == Enum.TooltipDataType.Spell and C_SpellBook.IsSpellInSpellBook(data.id) then
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip, data)
+        if not data or not data.id or issecretvalue(data.id) then return end
+        if C_SpellBook.IsSpellInSpellBook(data.id) then
             EnhanceTooltip(data.id, tooltip)
-        elseif data.type == Enum.TooltipDataType.Macro and data.lines and data.lines[1] and data.lines[1].tooltipID and C_SpellBook.IsSpellInSpellBook(data.lines[1].tooltipID) then
-            EnhanceTooltip(data.lines[1].tooltipID, tooltip)
+        end
+    end)
+
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(tooltip, data)
+        if not data or not data.lines or not data.lines[1] then return end
+        local tooltipID = data.lines[1].tooltipID
+        if not tooltipID or issecretvalue(tooltipID) then return end
+        if C_SpellBook.IsSpellInSpellBook(tooltipID) then
+            EnhanceTooltip(tooltipID, tooltip)
         end
     end)
 
