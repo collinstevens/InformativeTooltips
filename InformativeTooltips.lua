@@ -164,14 +164,19 @@ local function UpdateTalentCache()
     local configInfo = C_Traits.GetConfigInfo(configID)
     if not configInfo then return end
 
-    -- Build a lookup of tree names: treeIDs[1] = "Class", treeIDs[2] = spec name
-    local treeNames = {}
-    for i, treeID in ipairs(configInfo.treeIDs) do
-        if i == 1 then
-            treeNames[treeID] = "Class"
-        else
-            local treeInfo = C_Traits.GetTreeInfo(configID, treeID)
-            treeNames[treeID] = treeInfo and treeInfo.titleText or "Spec"
+    -- Build currency-to-source mapping: currency[1] = "Class", currency[2] = spec name
+    local specIndex = GetSpecialization()
+    local specName = specIndex and select(2, GetSpecializationInfo(specIndex)) or "Spec"
+    local currencyToSource = {}
+    for _, treeID in ipairs(configInfo.treeIDs) do
+        local treeCurrencyInfo = C_Traits.GetTreeCurrencyInfo(configID, treeID, false)
+        if treeCurrencyInfo then
+            if treeCurrencyInfo[1] then
+                currencyToSource[treeCurrencyInfo[1].traitCurrencyID] = "Class"
+            end
+            if treeCurrencyInfo[2] then
+                currencyToSource[treeCurrencyInfo[2].traitCurrencyID] = specName
+            end
         end
     end
 
@@ -179,19 +184,25 @@ local function UpdateTalentCache()
     local subTreeNames = {}
 
     for _, treeID in ipairs(configInfo.treeIDs) do
-        local treeName = treeNames[treeID]
         local nodes = C_Traits.GetTreeNodes(treeID)
         for _, nodeID in ipairs(nodes) do
             local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID)
 
-            -- Determine source: hero subtree name, or the tree name
-            local source = treeName
+            -- Determine source: hero subtree name, or class/spec from node cost currency
+            local source
             if nodeInfo.subTreeID then
                 if not subTreeNames[nodeInfo.subTreeID] then
                     local subTreeInfo = C_Traits.GetSubTreeInfo(configID, nodeInfo.subTreeID)
                     subTreeNames[nodeInfo.subTreeID] = subTreeInfo and subTreeInfo.name or "Hero"
                 end
                 source = subTreeNames[nodeInfo.subTreeID]
+            else
+                local costs = C_Traits.GetNodeCost(configID, nodeID)
+                if costs and #costs > 0 then
+                    source = currencyToSource[costs[1].ID] or "Class"
+                else
+                    source = "Class"
+                end
             end
 
             local activeEntryID = nodeInfo.activeEntry and nodeInfo.activeEntry.entryID
