@@ -1,12 +1,11 @@
 package-as: InformativeTooltips
 
 ignore:
+  - .claude
   - .github
   - .vscode
   - .gitignore
-  - README.md
-  - logo.png
-  - logo.svg
-  - LICENSE
-  - CLAUDE.md
   - media
+  - scripts
+  - README.md
+  - CLAUDE.md
